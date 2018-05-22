@@ -20,6 +20,12 @@ Replace every `wiredep` import with `wiredep-away`.
 
 This package was created to help developers move away from bower :)
 
+## Recomendations
+
+You should use this package to help you with the migration to [Yarn][yarn], then 
+you'll need to start using a advanced build like (Webpack, Rollup, Browserify, etc...), to
+to import your dependencies directly from `node_modules`.
+
 ## Configuration
 To see functionallity check this fork base.
 
