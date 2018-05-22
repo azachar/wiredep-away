@@ -35,6 +35,7 @@ function wiredep(opts) {
   config.set
     ('bower.json', opts.bowerJson || getBowerConfig(cwd))
     ('bower-directory', opts.directory || findBowerDirectory(cwd))
+    ('nodemodules-directory', opts.nodeModules || $.path.resolve(cwd, './node_modules'))
     ('cwd', cwd)
     ('dependencies', opts.dependencies === false ? false : true)
     ('detectable-file-types', [])
