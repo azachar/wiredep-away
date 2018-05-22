@@ -9,8 +9,16 @@
 Install the module with [**Yarn**][yarn]:
 
 ```bash
-$ yarn add wiredep-away
+yarn add wiredep-away
+# If you still having the other one
+yarn remove wiredep
 ```
+
+Replace every `wiredep` import with `wiredep-away`.
+
+## Inspiration
+
+This package was created to help developers move away from bower :)
 
 ## Configuration
 To see functionallity check this fork base.
