@@ -6,34 +6,15 @@
 var fs = require('fs-extra');
 var path = require('path');
 var assert = require('chai').assert;
+var uncache = require('uncache')(require);
 var wiredep;
-
-require.uncache = function (moduleName) {
-  var mod = require.resolve(moduleName);
-  if (mod && ((mod = require.cache[mod]) !== undefined)) {
-    (function run(mod) {
-      mod.children.forEach(function (child) {
-        run(child);
-      });
-      delete require.cache[mod.id];
-    })(mod);
-  }
-
-  Object.keys(module.constructor._pathCache).forEach(function(cacheKey) {
-    if (cacheKey.indexOf(moduleName)>0) {
-      delete module.constructor._pathCache[cacheKey];
-    }
-  });
-};
+uncache('../wiredep');
 
 describe('wiredep', function () {
   beforeEach(function () {
     wiredep = require('../wiredep');
-  })
-  afterEach(function () {
-    require.uncache('../wiredep');
-  })
-  before(function() {
+  });
+  before(function () {
     fs.copySync('test/fixture', '.tmp');
     process.chdir('.tmp');
   });
@@ -319,28 +300,28 @@ describe('wiredep', function () {
     });
   });
 
-  describe('events', function() {
+  describe('events', function () {
     var filePath = 'html/index-emitter.html';
     var fileData;
 
-    before(function(done) {
-      fs.readFile(filePath, function(err, file) {
+    before(function (done) {
+      fs.readFile(filePath, function (err, file) {
         fileData = file;
         done(err || null);
       });
     });
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
       fs.writeFile(filePath, fileData, done);
     });
 
-    it('should send injected file data', function(done) {
+    it('should send injected file data', function (done) {
       var injected = 0;
       var paths = ['bootstrap.css', 'codecode.css', 'bootstrap.js', 'codecode.js', 'jquery.js'];
 
       wiredep({
         src: filePath,
-        onPathInjected: function(file) {
+        onPathInjected: function (file) {
           assert(typeof file.block !== 'undefined');
           assert.equal(file.file, filePath);
           assert(paths.indexOf(file.path.split('/').pop()) > -1);
@@ -352,31 +333,31 @@ describe('wiredep', function () {
       });
     });
 
-    it('should send updated file path', function(done) {
+    it('should send updated file path', function (done) {
       wiredep({
         src: filePath,
-        onFileUpdated: function(path) {
+        onFileUpdated: function (path) {
           assert.equal(path, filePath);
           done();
         }
       });
     });
 
-    it('should send package name when main is not found', function(done) {
+    it('should send package name when main is not found', function (done) {
       var bowerJson = JSON.parse(fs.readFileSync('./bower_packages_without_main.json'));
       var packageWithoutMain = 'fake-package-without-main-and-confusing-file-tree';
 
       wiredep({
         bowerJson: bowerJson,
         src: filePath,
-        onMainNotFound: function(pkg) {
+        onMainNotFound: function (pkg) {
           assert.equal(pkg, packageWithoutMain);
           done();
         }
       });
     });
 
-    it('should throw an error when component is not found', function() {
+    it('should throw an error when component is not found', function () {
       var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
       var missingComponent = 'missing-component';
 
@@ -388,14 +369,14 @@ describe('wiredep', function () {
       }, missingComponent + ' is not installed. Try running `bower install` or remove the component from your bower.json file.');
     });
 
-    it('should allow overriding the error when component is not found', function(done) {
+    it('should allow overriding the error when component is not found', function (done) {
       var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
       var missingComponent = 'missing-component';
 
       wiredep({
         bowerJson: bowerJson,
         src: filePath,
-        onError: function(err) {
+        onError: function (err) {
           assert.ok(err instanceof Error);
           assert.equal(err.message, missingComponent + ' is not installed. Try running `bower install` or remove the component from your bower.json file.');
           done();

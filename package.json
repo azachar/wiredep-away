@@ -23,7 +23,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "test": "jshint *.js lib/*.js test/*.js && NODE_ENV=test mocha -R spec",
+    "test": "NODE_ENV=test mocha -R spec",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
   "dependencies": {
@@ -39,6 +39,7 @@
     "fs-extra": "^0.26.7",
     "istanbul": "^0.4.2",
     "jshint": "*",
-    "mocha": "*"
+    "mocha": "*",
+    "uncache": "^0.1.0"
   }
 }
