@@ -1,25 +1,29 @@
 {
-  "name": "wiredep",
-  "version": "4.0.0",
-  "main": "./wiredep.js",
-  "description": "Wire Bower dependencies to your source code.",
-  "repository": "taptapship/wiredep",
+  "name": "wiredep-away",
+  "version": "0.1.0",
+  "main": "./wiredep-away.js",
+  "description": "Wire Yarn dependencies to your source code.",
+  "contributors": [
+    {
+      "name": "Stephen Sawchuk",
+      "email": "sawchuk@gmail.com"
+    }
+  ],
+  "repository": "johnnyasantoss/wiredep-away",
   "author": {
-    "name": "Stephen Sawchuk",
-    "email": "sawchuk@gmail.com"
+    "email": "johnnyadsantos@gmail.com",
+    "name": "Johnny Santos",
+    "url": "https://johnnyasantos.com"
   },
   "keywords": [
     "bower",
+    "bower-away",
+    "yarn",
     "package",
     "management",
     "inject",
     "script",
     "dependencies"
-  ],
-  "files": [
-    "lib/",
-    "LICENSE",
-    "wiredep.js"
   ],
   "license": "MIT",
   "scripts": {
@@ -31,8 +35,7 @@
     "glob": "^7.0.3",
     "lodash": "^4.6.1",
     "propprop": "^0.3.0",
-    "through2": "^2.0.1",
-    "wiredep-cli": "^0.1.0"
+    "through2": "^2.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
