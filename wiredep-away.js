@@ -102,9 +102,7 @@ function getBowerConfig(cwd) {
   var dependencies = {};
 
   Object.keys(packageObj.dependencies)
-    .filter(function (dep) {
-      return !!dep && dep.indexOf('@bower_components') !== -1;
-    }).map(function (dep) {
+    .map(function (dep) {
       return dependencies[dep.replace('@bower_components/', '')] = packageObj.dependencies[dep];
     });
 
