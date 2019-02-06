@@ -102,15 +102,25 @@ function getBowerConfig(cwd) {
   var dependencies = {};
 
   Object.keys(packageObj.dependencies)
-    .map(function (dep) {
-      if(dep.indexOf('@bower_components/') !== -1)
-      		return dependencies[dep.replace('@bower_components/', '')] = packageObj.dependencies[dep];
+    .forEach(function (dep) {
+      if (dep.indexOf('@bower_components/') !== -1) {
+        dependencies[dep.replace('@bower_components/', '')] = packageObj.dependencies[dep];
+      }
+    });
+
+  var devDependencies = {};
+  Object.keys(packageObj.devDependencies)
+    .forEach(function (dep) {
+      if (dep.indexOf('@bower_components/') !== -1) {
+        devDependencies[dep.replace('@bower_components/', '')] = packageObj.devDependencies[dep];
+      }
     });
 
   return {
     name: packageObj.name,
     version: packageObj.version,
-    dependencies: dependencies
+    dependencies: dependencies,
+    devDependencies: devDependencies
   };
 }
 
