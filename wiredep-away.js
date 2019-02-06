@@ -34,8 +34,17 @@ function wiredep(opts) {
 
   config.set
     ('bower.json', opts.bowerJson || getBowerConfig(cwd))
+  config.set('on-error', opts.onError || function(err) {
+      throw new Error(err);
+    })
+    ('on-file-updated', opts.onFileUpdated || function() {})
+    ('on-main-not-found', opts.onMainNotFound || function() {})
+    ('on-path-injected', opts.onPathInjected || function() {})
+    ('search-in-node-modules', opts.searchInNodeModules || opts.nodeModules || false);
+
+  config.set('bower.json', opts.bowerJson || getBowerConfig(cwd))
     ('bower-directory', opts.directory || findBowerDirectory(cwd))
-    ('nodemodules-directory', opts.nodeModules || $.path.resolve(cwd, './node_modules'))
+    ('nodemodules-directory', config.get('search-in-node-modules') ? (opts.nodeModules || $.path.resolve(cwd, './node_modules')) : config.get('bower-directory'))
     ('cwd', cwd)
     ('dependencies', opts.dependencies === false ? false : true)
     ('detectable-file-types', [])
