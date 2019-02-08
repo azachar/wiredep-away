@@ -1,6 +1,3 @@
-/*jshint latedef:false */
-/*global after, describe, it, before, beforeEach */
-
 'use strict';
 
 var fs = require('fs-extra');
@@ -29,10 +26,10 @@ require.uncache = function (moduleName) {
 describe('wiredep', function () {
   beforeEach(function () {
     wiredep = require('../wiredep');
-  })
+  });
   afterEach(function () {
     require.uncache('../wiredep');
-  })
+  });
   before(function() {
     fs.copySync('test/fixture', '.tmp');
     process.chdir('.tmp');
@@ -509,7 +506,9 @@ describe('wiredep', function () {
 });
 
 function getFilePaths(fileName, fileType) {
-  var extension = fileType.match(/([^/]*)[/]*/)[1];
+  // match the first part of a path segment (html/deep/nested -> html)
+  //                                        (jade  -> html)
+  var extension = fileType.match(/[^\/]*/)[0];
   var filePaths = {
     expected: path.resolve(fileType, fileName + '-expected.' + extension),
     actual: path.resolve(fileType, fileName + '-actual.' + extension),
