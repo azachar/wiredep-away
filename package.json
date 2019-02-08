@@ -23,7 +23,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "test": "jshint *.js lib/*.js test/*.js && NODE_ENV=test mocha -R spec",
+    "style": "jshint *.js lib/*.js test/*.js",
+    "test": "NODE_ENV=test mocha -R spec",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
   "dependencies": {
