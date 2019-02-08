@@ -1,13 +1,17 @@
 {
-  "name": "wiredep",
+  "name": "wiredep-away",
   "version": "4.0.0",
   "main": "./wiredep.js",
-  "description": "Wire Bower dependencies to your source code.",
-  "repository": "taptapship/wiredep",
+  "description": "Wire bower-away dependencies to your source code.",
+  "repository": "azachar/wiredep-away",
   "author": {
+    "name": "Andrej Zachar",
+    "email": "andrej@chocolatejar.eu"
+  },
+  "contributors": [{
     "name": "Stephen Sawchuk",
     "email": "sawchuk@gmail.com"
-  },
+  }],
   "keywords": [
     "bower",
     "package",
