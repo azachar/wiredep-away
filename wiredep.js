@@ -26,20 +26,20 @@ function wiredep(opts) {
 
   config = module.exports.config = helpers.createStore();
 
-  config.set
-    ('on-error', opts.onError || function(err) { throw new Error(err); })
+  config.set('on-error', opts.onError || function(err) {
+      throw new Error(err);
+    })
     ('on-file-updated', opts.onFileUpdated || function() {})
     ('on-main-not-found', opts.onMainNotFound || function() {})
     ('on-path-injected', opts.onPathInjected || function() {});
 
-  config.set
-    ('bower.json', opts.bowerJson || JSON.parse($.fs.readFileSync($.path.join(cwd, './bower.json'))))
+  config.set('bower.json', opts.bowerJson || JSON.parse($.fs.readFileSync($.path.join(cwd, './bower.json'))))
     ('bower-directory', opts.directory || findBowerDirectory(cwd))
     ('cwd', cwd)
     ('dependencies', opts.dependencies === false ? false : true)
     ('detectable-file-types', [])
     ('dev-dependencies', opts.devDependencies)
-    ('exclude', Array.isArray(opts.exclude) ? opts.exclude : [ opts.exclude ])
+    ('exclude', Array.isArray(opts.exclude) ? opts.exclude : [opts.exclude])
     ('file-types', mergeFileTypesWithDefaults(opts.fileTypes))
     ('global-dependencies', helpers.createStore())
     ('ignore-path', opts.ignorePath)
@@ -49,22 +49,22 @@ function wiredep(opts) {
     ('stream', opts.stream ? opts.stream : {});
 
   $._.map(config.get('file-types'), 'detect').
-    forEach(function (fileType) {
-      Object.keys(fileType).
-        forEach(function (detectableFileType) {
-          var detectableFileTypes = config.get('detectable-file-types');
+  forEach(function(fileType) {
+    Object.keys(fileType).
+    forEach(function(detectableFileType) {
+      var detectableFileTypes = config.get('detectable-file-types');
 
-          if (detectableFileTypes.indexOf(detectableFileType) === -1) {
-            config.set('detectable-file-types', detectableFileTypes.concat(detectableFileType));
-          }
-        });
+      if (detectableFileTypes.indexOf(detectableFileType) === -1) {
+        config.set('detectable-file-types', detectableFileTypes.concat(detectableFileType));
+      }
     });
+  });
 
   if (!opts.stream && opts.src) {
     (Array.isArray(opts.src) ? opts.src : [opts.src]).
-      forEach(function (pattern) {
-        config.set('src', config.get('src').concat($.glob.sync(pattern)));
-      });
+    forEach(function(pattern) {
+      config.set('src', config.get('src').concat($.glob.sync(pattern)));
+    });
   }
 
   require('./lib/detect-dependencies')(config);
@@ -72,22 +72,24 @@ function wiredep(opts) {
 
   return config.get('stream').src ||
     Object.keys(config.get('global-dependencies-sorted')).
-      reduce(function (acc, depType) {
-        if (config.get('global-dependencies-sorted')[depType].length) {
-          acc[depType] = config.get('global-dependencies-sorted')[depType];
-        }
+  reduce(function(acc, depType) {
+    if (config.get('global-dependencies-sorted')[depType].length) {
+      acc[depType] = config.get('global-dependencies-sorted')[depType];
+    }
 
-        return acc;
-      }, { packages: config.get('global-dependencies').get() });
+    return acc;
+  }, {
+    packages: config.get('global-dependencies').get()
+  });
 }
 
 function mergeFileTypesWithDefaults(optsFileTypes) {
   var fileTypes = $._.clone(fileTypesDefault, true);
 
-  $._(optsFileTypes).each(function (fileTypeConfig, fileType) {
+  $._(optsFileTypes).each(function(fileTypeConfig, fileType) {
     // fallback to the default type for all html-like extensions (php, twig, hbs, etc)
     fileTypes[fileType] = fileTypes[fileType] || fileTypes['default'];
-    $._.each(fileTypeConfig, function (config, configKey) {
+    $._.each(fileTypeConfig, function(config, configKey) {
       if ($._.isPlainObject(fileTypes[fileType][configKey])) {
         fileTypes[fileType][configKey] =
           $._.assign(fileTypes[fileType][configKey], config);
@@ -112,10 +114,10 @@ function findBowerDirectory(cwd) {
   return directory;
 }
 
-wiredep.stream = function (opts) {
+wiredep.stream = function(opts) {
   opts = opts || {};
 
-  return $.through2.obj(function (file, enc, cb) {
+  return $.through2.obj(function(file, enc, cb) {
     if (file.isNull()) {
       this.push(file);
       return cb();

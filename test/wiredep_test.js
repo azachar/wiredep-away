@@ -6,28 +6,30 @@ var assert = require('chai').assert;
 var decache = require('decache');
 var wiredep;
 
-describe('wiredep', function () {
-  beforeEach(function () {
+describe('wiredep', function() {
+  beforeEach(function() {
     wiredep = require('../wiredep');
   });
-  afterEach(function () {
+  afterEach(function() {
     decache('../wiredep');
   });
   before(function() {
     fs.copySync('test/fixture', '.tmp');
     process.chdir('.tmp');
   });
-  after(function () {
+  after(function() {
     process.chdir('..');
     fs.removeSync('.tmp');
   });
 
-  describe('replace functionality', function () {
+  describe('replace functionality', function() {
     function testReplace(fileType) {
-      return function () {
+      return function() {
         var filePaths = getFilePaths('index', fileType);
 
-        wiredep({ src: [filePaths.actual] });
+        wiredep({
+          src: [filePaths.actual]
+        });
 
         assert.deepEqual(
           filePaths.read('expected').split('\n'),
@@ -39,20 +41,24 @@ describe('wiredep', function () {
     it('should work with html files', testReplace('html'));
     it('should work with jade files (buffered comments)', testReplace('jade'));
 
-    it('should work with jade files (unbuffered comments)', function () {
+    it('should work with jade files (unbuffered comments)', function() {
       var filePaths = getFilePaths('index-unbuffered-comments', 'jade');
 
-      wiredep({ src: [filePaths.actual] });
+      wiredep({
+        src: [filePaths.actual]
+      });
 
       assert.equal(filePaths.read('expected'), filePaths.read('actual'));
     });
 
     it('should work with pug files (buffered comments)', testReplace('pug'));
 
-    it('should work with pug files (unbuffered comments)', function () {
+    it('should work with pug files (unbuffered comments)', function() {
       var filePaths = getFilePaths('index-unbuffered-comments', 'pug');
 
-      wiredep({ src: [filePaths.actual] });
+      wiredep({
+        src: [filePaths.actual]
+      });
 
       assert.equal(filePaths.read('expected'), filePaths.read('actual'));
     });
@@ -65,19 +71,22 @@ describe('wiredep', function () {
     it('should work with unrecognized file types', testReplace('unrecognized'));
     it('should correctly handle relative paths', testReplace('html/deep/nested'));
 
-    it('should detect and use quotation marks', function () {
+    it('should detect and use quotation marks', function() {
       var filePaths = getFilePaths('index-detect-quotation-marks', 'html');
 
-      wiredep({ src: [filePaths.actual] });
+      wiredep({
+        src: [filePaths.actual]
+      });
 
       assert.equal(filePaths.read('expected'), filePaths.read('actual'));
     });
 
-    it('should support globbing', function () {
-      wiredep({ src: ['html/index-actual.*', 'jade/index-actual.*', 'slim/index-actual.*', 'haml/index-actual.*'] });
+    it('should support globbing', function() {
+      wiredep({
+        src: ['html/index-actual.*', 'jade/index-actual.*', 'slim/index-actual.*', 'haml/index-actual.*']
+      });
 
-      [
-        {
+      [{
           actual: 'html/index-actual.html',
           expected: 'html/index-expected.html'
         },
@@ -93,21 +102,27 @@ describe('wiredep', function () {
           actual: 'haml/index-actual.haml',
           expected: 'haml/index-expected.haml'
         }
-      ].forEach(function (testObject) {
+      ].forEach(function(testObject) {
         assert.equal(
-          fs.readFileSync(testObject.actual, { encoding: 'utf8' }),
-          fs.readFileSync(testObject.expected, { encoding: 'utf8' })
+          fs.readFileSync(testObject.actual, {
+            encoding: 'utf8'
+          }),
+          fs.readFileSync(testObject.expected, {
+            encoding: 'utf8'
+          })
         );
       });
     });
   });
 
-  describe('second run (identical files)', function () {
+  describe('second run (identical files)', function() {
     function testReplaceSecondRun(fileType) {
-      return function () {
+      return function() {
         var filePaths = getFilePaths('index-second-run', fileType);
 
-        wiredep({ src: [filePaths.actual] });
+        wiredep({
+          src: [filePaths.actual]
+        });
 
         assert.equal(filePaths.read('expected'), filePaths.read('actual'));
       };
@@ -124,9 +139,9 @@ describe('wiredep', function () {
     it('should replace haml after second run', testReplaceSecondRun('haml'));
   });
 
-  describe('excludes', function () {
+  describe('excludes', function() {
     function testReplaceWithExcludedSrc(fileType) {
-      return function () {
+      return function() {
         var filePaths = getFilePaths('index-excluded-files', fileType);
 
         wiredep({
@@ -145,13 +160,15 @@ describe('wiredep', function () {
     it('should handle haml with excludes specified', testReplaceWithExcludedSrc('haml'));
   });
 
-  describe('after uninstalls', function () {
-    describe('after uninstalling one package', function () {
+  describe('after uninstalls', function() {
+    describe('after uninstalling one package', function() {
       function testReplaceAfterUninstalledPackage(fileType) {
-        return function () {
+        return function() {
           var filePaths = getFilePaths('index-after-uninstall', fileType);
 
-          wiredep({ src: [filePaths.actual] });
+          wiredep({
+            src: [filePaths.actual]
+          });
 
           wiredep({
             bowerJson: JSON.parse(fs.readFileSync('./bower_after_uninstall.json')),
@@ -168,12 +185,14 @@ describe('wiredep', function () {
       it('should work with haml', testReplaceAfterUninstalledPackage('haml'));
     });
 
-    describe('after uninstalling all packages', function () {
+    describe('after uninstalling all packages', function() {
       function testReplaceAfterUninstallingAllPackages(fileType) {
-        return function () {
+        return function() {
           var filePaths = getFilePaths('index-after-uninstall-all', fileType);
 
-          wiredep({ src: [filePaths.actual] });
+          wiredep({
+            src: [filePaths.actual]
+          });
 
           wiredep({
             bowerJson: JSON.parse(fs.readFileSync('./bower_after_uninstall_all.json')),
@@ -191,9 +210,9 @@ describe('wiredep', function () {
     });
   });
 
-  describe('custom format', function () {
+  describe('custom format', function() {
     function testReplaceWithCustomFormat(fileType, fileTypes) {
-      return function () {
+      return function() {
         var filePaths = getFilePaths('index-custom-format', fileType);
 
         wiredep({
@@ -252,8 +271,8 @@ describe('wiredep', function () {
 
   });
 
-  describe('devDependencies', function () {
-    it('should wire devDependencies if specified', function () {
+  describe('devDependencies', function() {
+    it('should wire devDependencies if specified', function() {
       var filePaths = getFilePaths('index-with-dev-dependencies', 'html');
 
       wiredep({
@@ -266,8 +285,8 @@ describe('wiredep', function () {
     });
   });
 
-  describe('overrides', function () {
-    it('should allow configuration overrides to specify a `main`', function () {
+  describe('overrides', function() {
+    it('should allow configuration overrides to specify a `main`', function() {
       var filePaths = getFilePaths('index-packages-without-main', 'html');
       var bowerJson = JSON.parse(fs.readFileSync('./bower_packages_without_main.json'));
       var overrides = bowerJson.overrides;
@@ -283,7 +302,7 @@ describe('wiredep', function () {
       assert.equal(filePaths.read('expected'), filePaths.read('actual'));
     });
 
-    it('should allow configuration overrides to specify `dependencies`', function () {
+    it('should allow configuration overrides to specify `dependencies`', function() {
       var filePaths = getFilePaths('index-override-dependencies', 'html');
       var bowerJson = JSON.parse(fs.readFileSync('./bower_packages_without_dependencies.json'));
       var overrides = bowerJson.overrides;
@@ -360,7 +379,7 @@ describe('wiredep', function () {
       var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
       var missingComponent = 'missing-component';
 
-      assert.throws(function () {
+      assert.throws(function() {
         wiredep({
           bowerJson: bowerJson,
           src: filePath
@@ -384,7 +403,7 @@ describe('wiredep', function () {
     });
   });
 
-  it('should allow specifying a custom replace function', function () {
+  it('should allow specifying a custom replace function', function() {
     var filePaths = getFilePaths('index-with-custom-replace-function', 'html');
 
     wiredep({
@@ -392,7 +411,7 @@ describe('wiredep', function () {
       fileTypes: {
         html: {
           replace: {
-            js: function (filePath) {
+            js: function(filePath) {
               return '<script src="' + filePath + '" class="yay"></script>';
             }
           }
@@ -403,7 +422,7 @@ describe('wiredep', function () {
     assert.equal(filePaths.read('expected'), filePaths.read('actual'));
   });
 
-  it('should return a useful object', function () {
+  it('should return a useful object', function() {
     var returnedObject = wiredep();
 
     assert.equal(typeof returnedObject.js, 'object');
@@ -414,7 +433,7 @@ describe('wiredep', function () {
     assert.equal(typeof returnedObject.packages, 'object');
   });
 
-  it('should respect the directory specified in a `.bowerrc`', function () {
+  it('should respect the directory specified in a `.bowerrc`', function() {
     var filePaths = getFilePaths('index-with-custom-bower-directory', 'html');
 
     wiredep({
@@ -426,7 +445,7 @@ describe('wiredep', function () {
     assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('should support inclusion of main files from top-level bower.json', function () {
+  it('should support inclusion of main files from top-level bower.json', function() {
     var filePaths = getFilePaths('index-include-self', 'html');
 
     wiredep({
@@ -438,7 +457,7 @@ describe('wiredep', function () {
     assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('should support inclusion of main files from bower.json in some other dir', function () {
+  it('should support inclusion of main files from bower.json in some other dir', function() {
     var filePaths = getFilePaths('index-cwd-include-self', 'html');
 
     wiredep({
@@ -450,7 +469,7 @@ describe('wiredep', function () {
     assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('should support inclusion of main files from some other dir with manually loaded bower.json', function () {
+  it('should support inclusion of main files from some other dir with manually loaded bower.json', function() {
     var filePaths = getFilePaths('index-cwd-include-self', 'html');
 
     wiredep({
@@ -463,7 +482,7 @@ describe('wiredep', function () {
     assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('should support inclusion of glob main files from bower.json', function () {
+  it('should support inclusion of glob main files from bower.json', function() {
     var filePaths = getFilePaths('index-include-glob', 'html');
 
     wiredep({
@@ -475,7 +494,7 @@ describe('wiredep', function () {
     assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('include-self: true should support inclusion of glob main files from own bower.json', function () {
+  it('include-self: true should support inclusion of glob main files from own bower.json', function() {
     var filePaths = getFilePaths('index-include-self-glob', 'html');
 
     wiredep({
@@ -495,8 +514,10 @@ function getFilePaths(fileName, fileType) {
   var filePaths = {
     expected: path.resolve(fileType, fileName + '-expected.' + extension),
     actual: path.resolve(fileType, fileName + '-actual.' + extension),
-    read: function (type) {
-      return fs.readFileSync(filePaths[type], { encoding: 'utf8' });
+    read: function(type) {
+      return fs.readFileSync(filePaths[type], {
+        encoding: 'utf8'
+      });
     }
   };
 
