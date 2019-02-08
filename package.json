@@ -24,8 +24,7 @@
   "license": "MIT",
   "scripts": {
     "style": "jshint *.js lib/*.js test/*.js",
-    "test": "NODE_ENV=test mocha -R spec",
-    "coverage": "istanbul cover _mocha -- -R spec"
+    "test": "NODE_ENV=test nyc mocha"
   },
   "dependencies": {
     "bower-config": "^1.3.0",
@@ -38,7 +37,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "fs-extra": "^0.26.7",
-    "istanbul": "^0.4.2",
+    "nyc": "^13.2.0",
     "jshint": "^2.10.1",
     "mocha": "^5.2.0"
   }
