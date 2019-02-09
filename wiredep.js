@@ -83,9 +83,25 @@ function wiredep(opts) {
   });
 }
 
+//resolve package.json file from (in order)
+// A)
+//  1) bowerJson Object (backwards-compatibility)
+//  2) bowerJson file (backwards-compatibility)
+//  3) bowerJson/bower.json file (backwards-compatibility)
+// B)
+//  4) packageJson object
+//  5) packageJson file
+//  6) packageJson/package.json file
+//  7) bowerJson/package.json file
+//  8) cwd/package.json file
+
 function getPackageJson(cwd, opts) {
-  if (opts.bowerJson) {
+  if ($._.isObject(opts.bowerJson)) {
     return opts.bowerJson;
+  }
+
+  if ($.fs.existsSync(opts.bowerJson)) {
+    return JSON.parse($.fs.readFileSync(opts.bowerJson));
   }
 
   var bowerJsonFile = $.path.join(cwd, './bower.json');
@@ -100,11 +116,18 @@ function getPackageJson(cwd, opts) {
 
   var packageObj;
 
-  if (opts.packageJson) {
+  if ($._.isObject(opts.packageJson)) {
     packageObj = opts.packageJson;
   } else {
-    var baseDir = $.path.dirname(bowerJsonFile);
-    var packageJsonFile = $.path.join(baseDir, './package.json');
+    var packageJsonFile = opts.packageJson;
+
+    if (opts.packageJson && !$.fs.existsSync(packageJsonFile)) {
+      packageJsonFile = $.path.join($.path.dirname(opts.packageJson), './package.json');
+    }
+
+    if (opts.bowerJson && !$.fs.existsSync(packageJsonFile)) {
+      packageJsonFile = $.path.join($.path.dirname(bowerJsonFile), './package.json');
+    }
 
     if (!$.fs.existsSync(packageJsonFile)) {
       packageJsonFile = $.path.join(cwd, './package.json');
@@ -115,6 +138,8 @@ function getPackageJson(cwd, opts) {
       error.code = 'YARN_COMPONENTS_MISSING';
       config.get('on-error')(error);
     }
+    packageJsonFile = $.path.resolve(packageJsonFile);
+    // console.log(`Using package.json file from ${packageJsonFile}`);
     packageObj = JSON.parse($.fs.readFileSync(packageJsonFile));
   }
 
@@ -143,6 +168,7 @@ function getPackageJson(cwd, opts) {
     devDependencies: devDependencies
   };
 
+  // console.log(fakeBowerJson);
   return fakeBowerJson;
 }
 

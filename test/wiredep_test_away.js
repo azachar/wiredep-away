@@ -489,7 +489,19 @@ describe('wiredep-away', function() {
     var filePaths = getFilePaths('index-include-glob', 'html');
 
     wiredep({
-      bowerJson: JSON.parse(fs.readFileSync('./glob_main/package.json')),
+      packageJson: JSON.parse(fs.readFileSync('./glob_main/package.json')),
+      src: [filePaths.actual],
+      cwd: 'glob_main'
+    });
+
+    assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+  });
+
+  it('should support inclusion of glob main files from package.json when specified as string', function() {
+    var filePaths = getFilePaths('index-include-glob', 'html');
+
+    wiredep({
+      packageJson: './glob_main/package.json',
       src: [filePaths.actual],
       cwd: 'glob_main'
     });
