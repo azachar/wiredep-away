@@ -33,7 +33,7 @@ function wiredep(opts) {
     ('on-main-not-found', opts.onMainNotFound || function() {})
     ('on-path-injected', opts.onPathInjected || function() {});
 
-  config.set('bower.json', opts.bowerJson || JSON.parse($.fs.readFileSync($.path.join(cwd, './bower.json'))))
+  config.set('bower.json', getPackageJson(cwd, opts))
     ('bower-directory', opts.directory || findBowerDirectory(cwd))
     ('cwd', cwd)
     ('dependencies', opts.dependencies === false ? false : true)
@@ -83,6 +83,69 @@ function wiredep(opts) {
   });
 }
 
+function getPackageJson(cwd, opts) {
+  if (opts.bowerJson) {
+    return opts.bowerJson;
+  }
+
+  var bowerJsonFile = $.path.join(cwd, './bower.json');
+  if ($.fs.existsSync(bowerJsonFile)) {
+    return JSON.parse($.fs.readFileSync(bowerJsonFile));
+  }
+
+  //if the bower.json file doesn't exists
+  //look for the @bower_components dependencies in package.json
+  //from migration of `bower-away` (https://github.com/sheerun/bower-away)
+  // Understand why here: https://bower.io/blog/2017/how-to-migrate-away-from-bower/
+
+  var packageObj;
+
+  if (opts.packageJson) {
+    packageObj = opts.packageJson;
+  } else {
+    var baseDir = $.path.dirname(bowerJsonFile);
+    var packageJsonFile = $.path.join(baseDir, './package.json');
+
+    if (!$.fs.existsSync(packageJsonFile)) {
+      packageJsonFile = $.path.join(cwd, './package.json');
+    }
+
+    if (!$.fs.existsSync(packageJsonFile)) {
+      var error = new Error('Cannot find where you keep your package.json.');
+      error.code = 'YARN_COMPONENTS_MISSING';
+      config.get('on-error')(error);
+    }
+    packageObj = JSON.parse($.fs.readFileSync(packageJsonFile));
+  }
+
+  var dependencies = {};
+
+  Object.keys(packageObj.dependencies || {})
+    .forEach(function(dep) {
+      if (dep.indexOf('@bower_components/') !== -1) {
+        dependencies[dep.replace('@bower_components/', '')] = packageObj.dependencies[dep];
+      }
+    });
+
+  var devDependencies = {};
+  Object.keys(packageObj.devDependencies || {})
+    .forEach(function(dep) {
+      if (dep.indexOf('@bower_components/') !== -1) {
+        devDependencies[dep.replace('@bower_components/', '')] = packageObj.devDependencies[dep];
+      }
+    });
+
+  var fakeBowerJson = {
+    name: packageObj.name,
+    version: packageObj.version,
+    main: packageObj.main,
+    dependencies: dependencies,
+    devDependencies: devDependencies
+  };
+
+  return fakeBowerJson;
+}
+
 function mergeFileTypesWithDefaults(optsFileTypes) {
   var fileTypes = $._.clone(fileTypesDefault, true);
 
@@ -106,7 +169,7 @@ function findBowerDirectory(cwd) {
   var directory = $.path.join(cwd, ($['bower-config'].read(cwd).directory || 'bower_components'));
 
   if (!$.fs.existsSync(directory)) {
-    var error = new Error('Cannot find where you keep your Bower packages.');
+    var error = new Error('Cannot find where you keep your Bower packages at ' + directory);
     error.code = 'BOWER_COMPONENTS_MISSING';
     config.get('on-error')(error);
   }

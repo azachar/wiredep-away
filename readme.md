@@ -31,6 +31,8 @@ There were some forks of original `wiredep` that did some patches with `bower-aw
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using `npm run style` or `npm test`.
 
+Please note to install test's symbolic links correctly on your OS run `npm run setup`.
+
 
 ## License
 Copyright (c) 2019 Andrej Zachar. Initially forked from Stephen Sawchuk. Licensed under the MIT license.

@@ -171,7 +171,7 @@ describe('wiredep-away', function() {
           });
 
           wiredep({
-            bowerJson: JSON.parse(fs.readFileSync('./bower_after_uninstall.json')),
+            packageJson: JSON.parse(fs.readFileSync('./package_after_uninstall.json')),
             src: [filePaths.actual]
           });
 
@@ -195,7 +195,7 @@ describe('wiredep-away', function() {
           });
 
           wiredep({
-            bowerJson: JSON.parse(fs.readFileSync('./bower_after_uninstall_all.json')),
+            packageJson: JSON.parse(fs.readFileSync('./package_after_uninstall_all.json')),
             src: [filePaths.actual]
           });
 
@@ -445,48 +445,51 @@ describe('wiredep-away', function() {
     assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('should support inclusion of main files from top-level bower.json', function() {
-    var filePaths = getFilePaths('index-include-self', 'html');
+  describe('includeSelf option', function() {
+    it('should support inclusion of main files from top-level package.json', function() {
+      var filePaths = getFilePaths('index-include-self', 'html');
 
-    wiredep({
-      bowerJson: JSON.parse(fs.readFileSync('./bower_with_main.json')),
-      src: [filePaths.actual],
-      includeSelf: true
+      wiredep({
+        bowerJson: JSON.parse(fs.readFileSync('./bower_with_main.json')),
+        src: [filePaths.actual],
+        includeSelf: true
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
     });
 
-    assert.equal(filePaths.read('actual'), filePaths.read('expected'));
-  });
+    it('should support inclusion of main files from package.json in some other dir', function() {
+      var filePaths = getFilePaths('index-cwd-include-self', 'html');
 
-  it('should support inclusion of main files from bower.json in some other dir', function() {
-    var filePaths = getFilePaths('index-cwd-include-self', 'html');
+      wiredep({
+        src: [filePaths.actual],
+        cwd: 'cwd_includeself',
+        includeSelf: true
+      });
 
-    wiredep({
-      src: [filePaths.actual],
-      cwd: 'cwd_includeself',
-      includeSelf: true
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
     });
 
-    assert.equal(filePaths.read('actual'), filePaths.read('expected'));
-  });
+    it('should support inclusion of main files from some other dir with manually loaded package.json', function() {
+      var filePaths = getFilePaths('index-cwd-include-self', 'html');
 
-  it('should support inclusion of main files from some other dir with manually loaded bower.json', function() {
-    var filePaths = getFilePaths('index-cwd-include-self', 'html');
+      wiredep({
+        packageJson: JSON.parse(fs.readFileSync('./cwd_includeself/package.json')),
+        src: [filePaths.actual],
+        cwd: 'cwd_includeself',
+        includeSelf: true
+      });
 
-    wiredep({
-      bowerJson: JSON.parse(fs.readFileSync('./cwd_includeself/bower.json')),
-      src: [filePaths.actual],
-      cwd: 'cwd_includeself',
-      includeSelf: true
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
     });
 
-    assert.equal(filePaths.read('actual'), filePaths.read('expected'));
   });
 
-  it('should support inclusion of glob main files from bower.json', function() {
+  it('should support inclusion of glob main files from package.json', function() {
     var filePaths = getFilePaths('index-include-glob', 'html');
 
     wiredep({
-      bowerJson: JSON.parse(fs.readFileSync('./glob_main/bower.json')),
+      bowerJson: JSON.parse(fs.readFileSync('./glob_main/package.json')),
       src: [filePaths.actual],
       cwd: 'glob_main'
     });

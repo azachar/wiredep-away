@@ -2,13 +2,15 @@
   "name": "wiredep-test",
   "version": "0.0.0",
   "dependencies": {
-    "@bower_components/bootstrap": "twbs/bootstrap#3.0.0",
-    "@bower_components/jquery": "jquery/jquery-dist#>= 1.9.0"
+    "@bower_components/codecode": "0.0.3",
+    "@bower_components/bootstrap": "3.0.0",
+    "@bower_components/modular-scale": "2.0.3",
+    "@bower_components/3l": "1.4.4",
+    "@bower_components/karma": "0.2.1"
   },
-  "main": [
-    "sample-main.js",
-    "sample-main.css"
-  ],
+  "devDependencies": {
+    "@bower_components/things": "0.1.1"
+  },
   "engines": {
     "yarn": ">= 1.0.0"
   },

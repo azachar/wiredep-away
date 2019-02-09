@@ -3,3 +3,6 @@
 *.log
 .nyc_output
 /coverage
+/test/fixture-away/bower_components
+/test/fixture-away/cwd_includeself/bower_components
+/test/fixture-away/glob_main/custom

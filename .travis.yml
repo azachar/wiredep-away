@@ -6,4 +6,5 @@ node_js:
   - v10
 script:
   - npm run style
+  - npm run setup
   - npm run test
