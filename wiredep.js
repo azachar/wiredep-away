@@ -162,6 +162,7 @@ function getPackageJson(cwd, opts) {
     });
 
   var fakeBowerJson = {
+    fakeBower: true,
     name: packageObj.name,
     version: packageObj.version,
     main: packageObj.main,

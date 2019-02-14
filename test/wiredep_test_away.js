@@ -376,27 +376,27 @@ describe('wiredep-away', function() {
     });
 
     it('should throw an error when component is not found', function() {
-      var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
+      var packageJson = JSON.parse(fs.readFileSync('./package_with_missing_component.json'));
       var missingComponent = 'missing-component:1.0.0';
 
       assert.throws(function() {
         wiredep({
-          bowerJson: bowerJson,
+          packageJson: packageJson,
           src: filePath
         });
-      }, missingComponent + ' is not installed. Try running `bower install` or remove the component from your bower.json file.');
+      }, missingComponent + ' is not installed. Try running `yarn` or remove the component from your package.json file.');
     });
 
     it('should allow overriding the error when component is not found', function(done) {
-      var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
+      var packageJson = JSON.parse(fs.readFileSync('./package_with_missing_component.json'));
       var missingComponent = 'missing-component:1.0.0';
 
       wiredep({
-        bowerJson: bowerJson,
+        packageJson: packageJson,
         src: filePath,
         onError: function(err) {
           assert.ok(err instanceof Error);
-          assert.equal(err.message, missingComponent + ' is not installed. Try running `bower install` or remove the component from your bower.json file.');
+          assert.equal(err.message, missingComponent + ' is not installed. Try running `yarn` or remove the component from your package.json file.');
           done();
         }
       });
