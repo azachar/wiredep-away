@@ -406,7 +406,7 @@ describe('wiredep', function() {
 
     it('should throw an error when component is not found', function() {
       var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
-      var missingComponent = 'missing-component';
+      var missingComponent = 'missing-component:1.0.0';
 
       assert.throws(function() {
         wiredep({
@@ -418,7 +418,7 @@ describe('wiredep', function() {
 
     it('should allow overriding the error when component is not found', function(done) {
       var bowerJson = JSON.parse(fs.readFileSync('./bower_with_missing_component.json'));
-      var missingComponent = 'missing-component';
+      var missingComponent = 'missing-component:1.0.0';
 
       wiredep({
         bowerJson: bowerJson,
