@@ -285,6 +285,35 @@ describe('wiredep', function() {
     });
   });
 
+  describe('verbose', function() {
+    it('should print dependencies in console', function() {
+      //we run existing test with verbose option
+      var filePaths = getFilePaths('index-cwd-include-self', 'html');
+
+      wiredep({
+        verbose: true,
+        src: [filePaths.actual],
+        cwd: 'cwd_includeself',
+        includeSelf: true
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+    it('should not print dependencies in console', function() {
+      //we run existing test with verbose option
+      var filePaths = getFilePaths('index-cwd-include-self', 'html');
+
+      wiredep({
+        verbose: false,
+        src: [filePaths.actual],
+        cwd: 'cwd_includeself',
+        includeSelf: true
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+  });
+
   describe('overrides', function() {
     it('should allow configuration overrides to specify a `main`', function() {
       var filePaths = getFilePaths('index-packages-without-main', 'html');

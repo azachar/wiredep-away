@@ -43,6 +43,7 @@ function wiredep(opts) {
     ('file-types', mergeFileTypesWithDefaults(opts.fileTypes))
     ('global-dependencies', helpers.createStore())
     ('ignore-path', opts.ignorePath)
+    ('verbose', opts.verbose || false)
     ('include-self', opts.includeSelf)
     ('overrides', $._.extend({}, config.get('bower.json').overrides, opts.overrides))
     ('src', [])
