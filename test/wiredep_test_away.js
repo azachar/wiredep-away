@@ -490,7 +490,8 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope/package.json',
+        cwd: 'scope',
+        ignorePath: ['scope/'],
         src: [filePaths.actual],
         scope: '@myBowerScope'
       });
@@ -502,7 +503,8 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-empty/package.json',
+        cwd: 'scope-empty',
+        ignorePath: ['scope-empty/'],
         src: [filePaths.actual],
         scope: ''
       });
@@ -514,7 +516,8 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-empty/package.json',
+        cwd: 'scope-empty',
+        ignorePath: ['scope-empty/'],
         src: [filePaths.actual],
         scope: ' '
       });
@@ -526,8 +529,8 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-default/package.json',
-        // cwd: 'scope-default',
+        cwd: 'scope-default',
+        ignorePath: ['scope-default/'],
         src: [filePaths.actual],
         scope: '@bower_components'
       });
@@ -539,7 +542,8 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-default/package.json',
+        cwd: 'scope-default',
+        ignorePath: ['scope-default/'],
         src: [filePaths.actual],
         scope: null
       });
@@ -553,7 +557,23 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope/package.json',
+        verbose: true,
+        cwd: 'scope',
+        ignorePath: ['scope/'],
+        src: [filePaths.actual],
+        scope: '@myBowerScope/'
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include devDependencies only with custom scope', function() {
+      var filePaths = getFilePaths('index-scope-dev', 'html');
+
+      wiredep({
+        devDependencies: true,
+        cwd: 'scope',
+        ignorePath: ['scope/'],
         src: [filePaths.actual],
         scope: '@myBowerScope/'
       });
@@ -565,7 +585,22 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-empty/package.json',
+        cwd: 'scope-empty',
+        ignorePath: ['scope-empty/'],
+        src: [filePaths.actual],
+        scope: ''
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include devDependencies without a scope only when scope is ""', function() {
+      var filePaths = getFilePaths('index-scope-dev', 'html');
+
+      wiredep({
+        devDependencies: true,
+        cwd: 'scope-empty',
+        ignorePath: ['scope-empty/'],
         src: [filePaths.actual],
         scope: ''
       });
@@ -577,7 +612,22 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-empty/package.json',
+        cwd: 'scope-empty',
+        ignorePath: ['scope-empty/'],
+        src: [filePaths.actual],
+        scope: ' '
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include devDependencies without a scope only when scope is "  " ', function() {
+      var filePaths = getFilePaths('index-scope-dev', 'html');
+
+      wiredep({
+        devDependencies: true,
+        cwd: 'scope-empty',
+        ignorePath: ['scope-empty/'],
         src: [filePaths.actual],
         scope: ' '
       });
@@ -589,8 +639,22 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-default/package.json',
-        // cwd: 'scope-default',
+        cwd: 'scope-default',
+        ignorePath: ['scope-default/'],
+        src: [filePaths.actual],
+        scope: '@bower_components/'
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include devDependencies by default with the scope @bower_components/', function() {
+      var filePaths = getFilePaths('index-scope-dev', 'html');
+
+      wiredep({
+        devDependencies: true,
+        cwd: 'scope-default',
+        ignorePath: ['scope-default/'],
         src: [filePaths.actual],
         scope: '@bower_components/'
       });
@@ -602,7 +666,22 @@ describe('wiredep-away', function() {
       var filePaths = getFilePaths('index-scope', 'html');
 
       wiredep({
-        packageJson: 'scope-default/package.json',
+        cwd: 'scope-default',
+        ignorePath: ['scope-default/'],
+        src: [filePaths.actual],
+        scope: null
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include devDependencies with the scope @bower_components/ if scope is null', function() {
+      var filePaths = getFilePaths('index-scope-dev', 'html');
+
+      wiredep({
+        devDependencies: true,
+        cwd: 'scope-default',
+        ignorePath: ['scope-default/'],
         src: [filePaths.actual],
         scope: null
       });

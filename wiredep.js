@@ -164,7 +164,7 @@ function getPackageJson(cwd, opts) {
     Object.keys(packageObj.devDependencies || {})
       .forEach(function(dep) {
         if (!dep.startsWith('@')) {
-          dependencies[dep] = packageObj.dependencies[dep];
+          devDependencies[dep] = packageObj.devDependencies[dep];
         }
       });
   } else {
