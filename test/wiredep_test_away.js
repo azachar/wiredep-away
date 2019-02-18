@@ -485,6 +485,132 @@ describe('wiredep-away', function() {
 
   });
 
+  describe('scope option without /', function() {
+    it('should include dependencies only with custom scope', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope/package.json',
+        src: [filePaths.actual],
+        scope: '@myBowerScope'
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies without a scope only when scope is ""', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-empty/package.json',
+        src: [filePaths.actual],
+        scope: ''
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies without a scope only when scope is "  " ', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-empty/package.json',
+        src: [filePaths.actual],
+        scope: ' '
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies by default with the scope @bower_components', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-default/package.json',
+        // cwd: 'scope-default',
+        src: [filePaths.actual],
+        scope: '@bower_components'
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies with the scope @bower_components if scope is null', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-default/package.json',
+        src: [filePaths.actual],
+        scope: null
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+  });
+
+  describe('scope option with /', function() {
+    it('should include dependencies only with custom scope', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope/package.json',
+        src: [filePaths.actual],
+        scope: '@myBowerScope/'
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies without a scope only when scope is ""', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-empty/package.json',
+        src: [filePaths.actual],
+        scope: ''
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies without a scope only when scope is "  " ', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-empty/package.json',
+        src: [filePaths.actual],
+        scope: ' '
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies by default with the scope @bower_components/', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-default/package.json',
+        // cwd: 'scope-default',
+        src: [filePaths.actual],
+        scope: '@bower_components/'
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+
+    it('should include dependencies with the scope @bower_components/ if scope is null', function() {
+      var filePaths = getFilePaths('index-scope', 'html');
+
+      wiredep({
+        packageJson: 'scope-default/package.json',
+        src: [filePaths.actual],
+        scope: null
+      });
+
+      assert.equal(filePaths.read('actual'), filePaths.read('expected'));
+    });
+  });
+
   it('should support inclusion of glob main files from package.json', function() {
     var filePaths = getFilePaths('index-include-glob', 'html');
 

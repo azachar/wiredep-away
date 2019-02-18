@@ -28,7 +28,7 @@
   "license": "MIT",
   "scripts": {
     "style": "jshint *.js lib/*.js test/*.js",
-    "setup": "cd test/fixture-away; yarn postinstall; cd cwd_includeself; yarn postinstall; cd ../glob_main; yarn postinstall",
+    "setup": "cd test/fixture-away; yarn postinstall; cd cwd_includeself; yarn postinstall; cd ../glob_main; yarn postinstall; cd ../scope; yarn postinstall; cd ../scope-default; yarn postinstall; cd ../scope-empty; yarn postinstall",
     "test": "NODE_ENV=test nyc mocha"
   },
   "dependencies": {

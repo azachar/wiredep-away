@@ -25,6 +25,7 @@ function wiredep(opts) {
   var cwd = opts.cwd ? $.path.resolve(opts.cwd) : process.cwd();
 
   config = module.exports.config = helpers.createStore();
+  config.set('verbose', opts.verbose || false);
 
   config.set('on-error', opts.onError || function(err) {
       throw new Error(err);
@@ -32,6 +33,8 @@ function wiredep(opts) {
     ('on-file-updated', opts.onFileUpdated || function() {})
     ('on-main-not-found', opts.onMainNotFound || function() {})
     ('on-path-injected', opts.onPathInjected || function() {});
+
+  config.set('scope', $._.isString(opts.scope) ? opts.scope.trim() : '@bower_components/');
 
   config.set('bower.json', getPackageJson(cwd, opts))
     ('bower-directory', opts.directory || findBowerDirectory(cwd))
@@ -43,7 +46,6 @@ function wiredep(opts) {
     ('file-types', mergeFileTypesWithDefaults(opts.fileTypes))
     ('global-dependencies', helpers.createStore())
     ('ignore-path', opts.ignorePath)
-    ('verbose', opts.verbose || false)
     ('include-self', opts.includeSelf)
     ('overrides', $._.extend({}, config.get('bower.json').overrides, opts.overrides))
     ('src', [])
@@ -145,21 +147,42 @@ function getPackageJson(cwd, opts) {
   }
 
   var dependencies = {};
-
-  Object.keys(packageObj.dependencies || {})
-    .forEach(function(dep) {
-      if (dep.indexOf('@bower_components/') !== -1) {
-        dependencies[dep.replace('@bower_components/', '')] = packageObj.dependencies[dep];
-      }
-    });
-
   var devDependencies = {};
-  Object.keys(packageObj.devDependencies || {})
-    .forEach(function(dep) {
-      if (dep.indexOf('@bower_components/') !== -1) {
-        devDependencies[dep.replace('@bower_components/', '')] = packageObj.devDependencies[dep];
-      }
-    });
+  var bowerScope = config.get('scope');
+  if (config.get('verbose')) {
+    console.log(`Using scope [${bowerScope}]`);
+  }
+  if ($._.isEmpty(bowerScope)) {
+    //without scope dependencies
+    Object.keys(packageObj.dependencies || {})
+      .forEach(function(dep) {
+        if (!dep.startsWith('@')) {
+          dependencies[dep] = packageObj.dependencies[dep];
+        }
+      });
+
+    Object.keys(packageObj.devDependencies || {})
+      .forEach(function(dep) {
+        if (!dep.startsWith('@')) {
+          dependencies[dep] = packageObj.dependencies[dep];
+        }
+      });
+  } else {
+    //scoped dependencies only
+    Object.keys(packageObj.dependencies || {})
+      .forEach(function(dep) {
+        if (dep.indexOf(bowerScope) !== -1) {
+          dependencies[dep.replace(bowerScope, '')] = packageObj.dependencies[dep];
+        }
+      });
+
+    Object.keys(packageObj.devDependencies || {})
+      .forEach(function(dep) {
+        if (dep.indexOf(bowerScope) !== -1) {
+          devDependencies[dep.replace(bowerScope, '')] = packageObj.devDependencies[dep];
+        }
+      });
+  }
 
   var fakeBowerJson = {
     fakeBower: true,

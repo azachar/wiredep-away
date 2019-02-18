@@ -1,0 +1,21 @@
+{
+  "name": "wiredep-test",
+  "version": "0.0.0",
+  "dependencies": {
+    "@myBowerScope/bootstrap": "twbs/bootstrap#3.0.0",
+
+    "@otherScope/foo": "1.0.2",
+    "bar": "1.0.3"
+  },
+  "devDependencies": {
+    "@myBowerScope/jquery": "jquery/jquery-dist#>= 1.9.0",
+
+    "@otherScope/things": "1.0.1"
+  },
+  "engines": {
+    "yarn": ">= 1.0.0"
+  },
+  "scripts": {
+    "postinstall": "node -e \"try { require('fs').symlinkSync(require('path').resolve('node_modules/@myBowerScope'), 'bower_components', 'junction') } catch (e) { }\""
+  }
+}

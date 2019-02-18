@@ -6,3 +6,6 @@
 /test/fixture-away/bower_components
 /test/fixture-away/cwd_includeself/bower_components
 /test/fixture-away/glob_main/custom
+/test/fixture-away/scope/bower_components
+/test/fixture-away/scope-default/bower_components
+/test/fixture-away/scope-empty/bower_components
